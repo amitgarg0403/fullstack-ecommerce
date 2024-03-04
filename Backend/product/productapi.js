@@ -61,6 +61,37 @@ router.post('/', upload.single('image'), async(req, res) => {
 
   });
   
+router.put('/:_id', upload.single('image'), async(req, res) => {
+    // The 'image' parameter should match the name attribute in your HTML form input field
+    // This middleware will process the single file upload
+    
+    // Access uploaded file details from req.file
+    let productId = req.params;
+    let name = req.body.name;
+    let price = req.body.price;
+    let description = req.body.description;
+    let sellerId = req.body.sellerId;
+    let stock = req.body.stock;
+
+    let updateProduct = {
+      name, price, description, stock, sellerId
+    }
+
+    console.log(updateProduct);
+    console.log(productId);
+
+    try{
+      await Product.findByIdAndUpdate(productId, updateProduct)
+      console.log("Product Updated");
+      res.status(200).send('File updated successfully!');
+    }
+    catch(error){
+      console.log('Error occurred:', error);
+      res.status(500).send('Error uploading file!');
+    }
+
+  });
+  
 
 
 
@@ -68,7 +99,6 @@ router.post('/', upload.single('image'), async(req, res) => {
 router.get("/", async (req, res) => {
   try {
     let productArr = await Product.find()
-    console.log(productArr)
     res.status(200).send(productArr)
   } 
   catch (error) {
@@ -77,8 +107,9 @@ router.get("/", async (req, res) => {
 });
 
 // delete product api
-router.delete('/_id', async(req,res)=>{
+router.delete('/:_id', async(req,res)=>{
   try{
+    console.log(req.params);
     let response = await Product.findOneAndDelete(req.params)
     console.log(response)
     console.log('Product delete Success')
