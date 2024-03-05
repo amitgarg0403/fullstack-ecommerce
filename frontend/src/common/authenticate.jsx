@@ -9,7 +9,7 @@ const Authentication = () =>{
         email : "", password : "", acctype : "Customer"  
     })
 
-    //Register Seller
+    //Register Seller & Customer
     const getRegister = async(e) =>{
         e.preventDefault();
 
@@ -22,7 +22,7 @@ const Authentication = () =>{
         .catch(err=> console.log(err))
     }
     
-    //Seller Login
+    //Seller Login & Customer
     const getLogin = async(e) =>{
         e.preventDefault();
 
@@ -34,8 +34,8 @@ const Authentication = () =>{
             let userInfo = response.data
             localStorage.setItem("name", userInfo.name)
             localStorage.setItem("email", userInfo.email)
-            localStorage.setItem("sellerId", userInfo.sellerId)
-            localStorage.setItem("loginType", "seller")
+            localStorage.setItem((userData.acctype === "Customer") ? "customerId" : "sellerId", (userData.acctype === "Customer") ? userInfo.customerId : userInfo.sellerId);
+            localStorage.setItem("loginType", (userData.acctype === "Customer") ? "customer" : "seller");
             window.location.href = "/";
         })
         .catch(err=> console.log(err))

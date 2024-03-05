@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-// const Customer = require('./customerSchema')
+const Customer = require('./customerSchema')
 const { v4: uuidv4 } = require('uuid');
 
-
+// Customer Register post request
 router.post("/register", async(req,res)=>{
     
     let newCustomer = {
@@ -15,10 +15,19 @@ router.post("/register", async(req,res)=>{
     };
     
     console.log(newCustomer);
-
+    
+    await Customer.create(newCustomer)
+    .then(response=>{
+        console.log('Account Registered Succcessfully')
+        res.status(200).send(response);
+    })
+    .catch(error=>{
+        console.log("Error occur in Customer account adding");
+    })
 })
 
-router.post("/login", (req,res)=>{
+// Customer Login post request
+router.post("/login", async(req,res)=>{
     
     let customerInfo = {
         email : req.body.email,
@@ -27,6 +36,64 @@ router.post("/login", (req,res)=>{
     }
     
     console.log(customerInfo);
+
+    await Customer.findOne({email : customerInfo.email})
+    .then(response=>{
+        if(response)
+        {
+            console.log(response);
+            console.log('Account Found Succcessfully')
+        }
+        res.status(200).send(response);
+    })
+    .catch(error=>{
+        console.log("Error No seller found");
+    })
+
+})
+
+// Customer data get request
+router.get("/:id", async(req,res)=>{
+    let customerId = req.params.id
+    await Customer.findOne({customerId: customerId})
+    .then(response=>{
+        if(response)
+        {
+            console.log(response);
+            console.log("Customer Found");
+        }
+        res.status(200).send(response);
+    })
+    .catch(error=>{
+        console.log("Error No seller found");
+    })
+})
+
+// Cutomer Address update request
+router.put('/:id', async(req,res)=>{
+    let customerID = {customerId : req.params.id};
+    console.log(customerID);
+    let addressInfo = {address : {
+        street : req.body.street, 
+        state: req.body.state , 
+        city : req.body.city , 
+        mobile : req.body.mobile , 
+        pincode : req.body.pincode
+    }}
+    await Customer.findOne(customerID)
+    .then(async(response)=>{
+        console.log(response)
+        let id = {_id : response._id}
+        await Customer.findByIdAndUpdate(id, addressInfo)
+        .then(response=>{
+            console.log("Address Update Successfully");
+            res.status(200).send(response);
+        })
+    })
+    .catch(error=>{
+        console.log("Error - address updation fail");
+        console.log(error);
+    })
 })
 
 module.exports = router;
