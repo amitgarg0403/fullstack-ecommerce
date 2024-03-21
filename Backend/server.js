@@ -26,6 +26,9 @@ app.use("/product", productRouter );
 const CustomerRouter = require("./customer/customerapi")
 app.use("/customer", CustomerRouter);
 
+const CartRouter = require('./cart/cartapi')
+app.use("/cart", CartRouter);
+
 const SellerRouter = require("./seller/sellerapi")
 app.use("/seller", SellerRouter);
 

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 const CustomerApp = ()=>{
-    const[allProduct, updateAllProduct] = useState([]);
     const[addressInfo, updateAddressInfo] = useState({
         street : "", city : "" , pincode : "", state : "" , mobile : ""
     });
@@ -15,17 +14,17 @@ const CustomerApp = ()=>{
     const[wishlist, updateWishlist] = useState([]);
 
     // Get all products from server
-    const getProducts = async() =>{
-        let url = "http://localhost:5000/product";
-        await axios.get(url)
-        .then(response=>{ 
-            console.log('Got All Product Succcessfully')
-            updateAllProduct(response.data);
-        })
-        .catch(error=>{
-            console.log("Error No product found");
-        })
-    }
+    // const getProducts = async() =>{
+    //     let url = "http://localhost:5000/product";
+    //     await axios.get(url)
+    //     .then(response=>{ 
+    //         console.log('Got All Product Succcessfully')
+    //         updateAllProduct(response.data);
+    //     })
+    //     .catch(error=>{
+    //         console.log("Error No product found");
+    //     })
+    // }
 
     const updateAddress =() =>{
         editRef.current.scrollIntoView( {behaviour:"smooth"})
@@ -105,7 +104,7 @@ const CustomerApp = ()=>{
                             </thead>
                             <tbody  class="table-group-divider">
                                 <tr>
-                                    <td scope="row">{customerDetail.name}</td>
+                                    <td>{customerDetail.name}</td>
                                     <td>{customerDetail.email}</td>
                                     <td>{customerDetail.password}</td>
                                     <td >{customerDetail.address.street}</td>
@@ -124,35 +123,35 @@ const CustomerApp = ()=>{
                     {/* Payment Details */}
                     <div className="card mb-4">
                         <div className="card-header text-center text-light bg-danger"> Payment Details</div>
-                        <div className="card-body">
+                        <div className="card-body bg-light">
                             <h6 className="">Add Card Details</h6>
                             <div className="row">
                                 <div className="col-lg-6 text-center">
                                     <div className="row m-3">
-                                        <input type="text"  placeholder="Enter Card Number" className="form-control"/>
+                                        <input type="text"  placeholder="Enter Card CVV" className="form-control"/>
                                         <br />
                                     </div>
                                     <div className="row m-3">
-                                        <input type="text"  placeholder="Enter Card CVV" className="form-control"/>
+                                        <input type="text"  placeholder="Enter Card Number" className="form-control"/>
                                         <br />
                                     </div>
                                 </div>
                                 <div className="col-lg-6 text-center">
                                     <div className="row m-3">
-                                        <input type="text"  placeholder="Enter Card Expiry" className="form-control"/>
+                                        <input type="date"  placeholder="Enter Card Expiry" className="form-control"/>
                                     </div>
                                     <button className="btn btn-sm btn-primary">Verify</button>
                                 </div>
                             </div>
                             <h6 className="">Add UPI address</h6>
                             <div className="row">
-                                <div className="col-lg-6 text-center">
+                                <div className="col-lg-8 text-center">
                                     <div className="row m-3">
                                         <input type="text"  placeholder="Enter UPI address" className="form-control"/>
                                         <br />
                                     </div>
                                 </div>
-                                <div className="col-lg-6 text-center">
+                                <div className="col-lg-4 text-center">
                                     <br />
                                     <button className="btn btn-sm btn-primary">Verify</button>
                                 </div>
@@ -173,7 +172,7 @@ const CustomerApp = ()=>{
                     {/* Add Address */}
                     <div className="card mb-3" ref={editRef}>
                         <div className="card-header text-center text-light bg-primary"> Add Address</div>
-                        <div className="card-body">
+                        <div className="card-body bg-light">
                             <div className="row">
                                 <div className="row mb-3">
                                     <div className="col-lg-8">

@@ -1,25 +1,83 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 
 const Products = ()=>{
-    const[productlist, updateProductlist] = useState([])
+    const[productlist, updateProductlist] = useState([]);
+    const[cartlist, updateCartlist] = useState([]);
 
     const getProduct = () =>{
         let url = "http://localhost:5000/product";
         fetch(url)
         .then(response=>response.json())
         .then(resultArr=>{
-            console.log(resultArr)
             updateProductlist(resultArr);
         })
 
     }
 
-    const addToCart = (id) =>{
-        alert('product added to cart'+ id)
+    const getCart = ()=>{
+        let customerID = localStorage.getItem('customerId');
+        if(!customerID)
+        {
+            console.error("Customer ID not found, Need to login first");
+            alert('Need to Login first!')
+            return;
+        }
+        let url = "http://localhost:5000/cart/"+ customerID;
+        axios.get(url)
+        .then(response=>{
+            console.log(response.data);
+            if(response.data.length == 0){
+                console.log("Your cart is Empty!")
+                return;
+            }
+            let cartArray = response.data.cartlist;
+            updateCartlist(cartArray);
+
+        })
+        .catch(error=>{
+            console.log("Error in finding cart on product page");
+        })
+
 
     }
+    const addToCart = async(product) =>{
+        let customerID = localStorage.getItem('customerId');
+        if(!customerID)
+        {
+            console.error("Customer ID not found, Need to login first");
+            alert('Need to Login first!')
+            return;
+        }
+            let cartItem = {
+                name: product.name,
+                image: product.image,
+                price: product.price,
+                qty: 1,
+                description: product.description,
+                productId: product._id
+            }
 
+            // check for duplicate product
+            if (cartlist.find(item => item.productId === cartItem.productId)) {
+                alert("Item already in cart");
+            } else {
+                updateCartlist(prevlist => [...prevlist, cartItem]);
+                let url = "http://localhost:5000/cart/"+ customerID;
+                await axios.post(url, cartItem)
+                .then(response=>{
+                    console.log(response.data.msg)
+                    alert("Added to cart");
+                })
+                .catch(error=>{
+                    alert("Error Item Already Exist!");
+                })
+            }   
+    }
+
+
+    // for Pagination
     //this code will calculate number of product from Per_Page then, pages display as required
     const PER_PAGE = 4;
     const [currentPage, setCurrentPage] = useState(0);
@@ -31,8 +89,14 @@ const Products = ()=>{
 
 
     useEffect(()=>{
+        console.log(cartlist);
         getProduct();
-    }, [])
+    }, [cartlist])
+
+    useEffect(()=>{
+        getCart()
+    }, []);
+
     return (
             <div className="row">
                 <h4 className="text-danger text-center m-4"> Product found - {productlist.length}</h4>
@@ -61,7 +125,7 @@ const Products = ()=>{
                             <br />
                             <small>{product.description}</small>
                             <p className="mt-2 fw-bold">Rs. {product.price} </p>
-                            <button className="btn btn-sm btn-warning" onClick={addToCart.bind(this, product._id)}>Add to Cart</button>
+                            <button className="btn btn-sm btn-warning" onClick={addToCart.bind(this, product)}>Add to Cart</button>
                         </div>
                         );
                     })}

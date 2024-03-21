@@ -7,6 +7,7 @@ import Products from './common/products';
 import CustomerApp from './customer/customerapp';
 import SellerDashboard from './seller/dashboard';
 import Authentication from './common/authenticate';
+import MyCart from './customer/cart';
 
 function App() {
   let loginType = localStorage.getItem("loginType");
@@ -20,6 +21,7 @@ function App() {
         
         <Route exact path='/auth' element={<Authentication />}></Route>
         <Route exact path='/showproducts' element={<Products />}></Route>
+        <Route exact path='/cart' element={<MyCart />}></Route>
       </Routes>
 
       <Footer />

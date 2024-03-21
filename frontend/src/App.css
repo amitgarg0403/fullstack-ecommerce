@@ -4,10 +4,18 @@
 
 .homepage-text{
     position: absolute;
-    top: 50px;
+    top: 180px;
 }
 
 .footer-points{
     list-style: none;
     
+}
+
+.fa-trash:hover{
+    color: red;
+}
+
+.fa-square-minus:hover, .fa-square-plus:hover{
+    color: gold;
 }
